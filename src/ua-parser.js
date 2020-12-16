@@ -774,6 +774,7 @@
             ], [[VERSION, /_/g, '.'], [NAME, 'iOS']], [
 
             /(mac\sos\sx)\s?([\w\s\.]*)/i,
+            /(mac\s*os\s*\/)\s?([\w\s\.]*)/i,
             /(macintosh|mac(?=_powerpc)\s)/i                                    // Mac OS
             ], [[NAME, 'Mac OS'], [VERSION, /_/g, '.']], [
 
@@ -783,6 +784,41 @@
             /(plan\s9|minix|beos|os\/2|amigaos|morphos|risc\sos|openvms|fuchsia)/i,
                                                                                 // Plan9/Minix/BeOS/OS2/AmigaOS/MorphOS/RISCOS/OpenVMS/Fuchsia
             /(unix)\s?([\w\.]*)/i                                               // UNIX
+            ], [NAME, VERSION]
+        ],
+
+        app : [[
+
+            // Windows based
+            /microsoft\s(skydrivesync)/i                                        // SkyDriveSync (microsoft)
+            ], [NAME], [
+            /(macoutlook|outlook)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i                    // Outlook (microsoft)
+            ], [NAME, VERSION], [
+            /(ring)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(oneDrive)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(code)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /microsoft\%20(teams)\//i
+            ], [NAME], [
+            /(findersync)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(excel)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(powerpoint)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(onenote)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(word)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(whatsapp)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(imovie)\//i
+            ], [NAME], [
+            /(python)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
+            ], [NAME, VERSION], [
+            /(slack)\/([0-9]*\.*[0-9]*\.*[0-9]*)/i
             ], [NAME, VERSION]
         ]
     };
@@ -831,6 +867,14 @@
             mapper.rgx.call(os, ua, rgxmap.os);
             return os;
         };
+        this.getApp = function () {
+            var app = { name: undefined, version: undefined };
+            mapper.rgx.call(app, ua, rgxmap.app);
+            if (app.name) {
+                app.name = util.lowerize(app.name);
+            }
+            return app;
+        };
         this.getResult = function () {
             return {
                 ua      : this.getUA(),
@@ -838,7 +882,8 @@
                 engine  : this.getEngine(),
                 os      : this.getOS(),
                 device  : this.getDevice(),
-                cpu     : this.getCPU()
+                cpu     : this.getCPU(),
+                app     : this.getApp(),
             };
         };
         this.getUA = function () {
@@ -876,6 +921,10 @@
         VERSION : VERSION
     };
     UAParser.OS = {
+        NAME    : NAME,
+        VERSION : VERSION
+    };
+    UAParser.APP = {
         NAME    : NAME,
         VERSION : VERSION
     };
